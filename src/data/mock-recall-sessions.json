@@ -1,0 +1,151 @@
+[
+  {
+    "id": "session-001",
+    "date": "2026-04-05",
+    "context": "weekend",
+    "status": "submitted",
+    "pass": 6,
+    "items": [
+      {
+        "id": "item-001",
+        "mealType": "Breakfast",
+        "quickText": "Nasi Uduk",
+        "matchedFoodId": "food-1",
+        "matchStatus": "Matched",
+        "portion": { "mode": "grams", "grams": 180 }
+      },
+      {
+        "id": "item-002",
+        "mealType": "Breakfast",
+        "quickText": "Air Putih",
+        "matchedFoodId": "food-6",
+        "matchStatus": "Matched",
+        "portion": { "mode": "household", "household": { "tool": "Gelas", "amount": 1 } }
+      },
+      {
+        "id": "item-003",
+        "mealType": "Snack",
+        "quickText": "Roti Bakar",
+        "matchedFoodId": "food-4",
+        "matchStatus": "Matched",
+        "portion": { "mode": "unit", "unit": { "name": "Slice", "amount": 2 } }
+      },
+      {
+        "id": "item-004",
+        "mealType": "Snack",
+        "quickText": "Jus Mangga",
+        "matchedFoodId": "food-7",
+        "matchStatus": "Matched",
+        "portion": { "mode": "household", "household": { "tool": "Gelas", "amount": 1 } }
+      },
+      {
+        "id": "item-005",
+        "mealType": "Lunch",
+        "quickText": "Nasi Padang",
+        "matchedFoodId": "food-8",
+        "matchStatus": "Matched",
+        "portion": { "mode": "grams", "grams": 220 }
+      },
+      {
+        "id": "item-006",
+        "mealType": "Lunch",
+        "quickText": "Jus Melon",
+        "matchedFoodId": "food-9",
+        "matchStatus": "Matched",
+        "portion": { "mode": "household", "household": { "tool": "Gelas", "amount": 1 } }
+      },
+      {
+        "id": "item-007",
+        "mealType": "Snack",
+        "quickText": "Bubur Ayam",
+        "matchedFoodId": "food-10",
+        "matchStatus": "Similar",
+        "portion": { "mode": "grams", "grams": 150 }
+      },
+      {
+        "id": "item-008",
+        "mealType": "Snack",
+        "quickText": "Air Mineral",
+        "matchedFoodId": "food-11",
+        "matchStatus": "Matched",
+        "portion": { "mode": "household", "household": { "tool": "Gelas", "amount": 1 } }
+      },
+      {
+        "id": "item-009",
+        "mealType": "Dinner",
+        "quickText": "Ayam Bakar",
+        "matchedFoodId": "food-2",
+        "matchStatus": "Matched",
+        "portion": { "mode": "grams", "grams": 160 }
+      },
+      {
+        "id": "item-010",
+        "mealType": "Dinner",
+        "quickText": "Es Teh",
+        "matchedFoodId": "food-3",
+        "matchStatus": "Matched",
+        "portion": { "mode": "household", "household": { "tool": "Gelas", "amount": 1 } }
+      },
+      {
+        "id": "item-011",
+        "mealType": "Snack",
+        "quickText": "Ciki Taro",
+        "matchedFoodId": "food-5",
+        "matchStatus": "Custom",
+        "portion": { "mode": "unit", "unit": { "name": "Pack", "amount": 1 } }
+      },
+      {
+        "id": "item-012",
+        "mealType": "Snack",
+        "quickText": "Es Teh",
+        "matchedFoodId": "food-3",
+        "matchStatus": "Matched",
+        "portion": { "mode": "household", "household": { "tool": "Gelas", "amount": 1 } }
+      }
+    ]
+  },
+  {
+    "id": "session-002",
+    "date": "2026-04-07",
+    "context": "weekday",
+    "status": "draft",
+    "pass": 3,
+    "items": [
+      {
+        "id": "item-101",
+        "mealType": "Breakfast",
+        "quickText": "Nasi Uduk",
+        "matchedFoodId": "food-1",
+        "matchStatus": "Matched"
+      },
+      {
+        "id": "item-102",
+        "mealType": "Breakfast",
+        "quickText": "Air Putih",
+        "matchedFoodId": "food-6",
+        "matchStatus": "Matched"
+      },
+      {
+        "id": "item-103",
+        "mealType": "Snack",
+        "quickText": "Roti Bakar",
+        "matchedFoodId": "food-4",
+        "matchStatus": "Matched"
+      },
+      {
+        "id": "item-104",
+        "mealType": "Lunch",
+        "quickText": "Ayam Bakar",
+        "matchedFoodId": "food-2",
+        "matchStatus": "Matched"
+      },
+      {
+        "id": "item-105",
+        "mealType": "Snack",
+        "quickText": "Ciki Taro",
+        "matchedFoodId": "food-5",
+        "matchStatus": "Custom"
+      }
+    ]
+  }
+]

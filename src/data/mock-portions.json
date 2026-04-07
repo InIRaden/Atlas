@@ -1,0 +1,60 @@
+[
+  {
+    "foodId": "food-1",
+    "modes": {
+      "grams": { "default": 150, "min": 25, "max": 500, "step": 5 },
+      "visual": {
+        "sizes": [
+          { "label": "S", "grams": 90, "image": "/images/portion/nasi-s.jpg" },
+          { "label": "M", "grams": 150, "image": "/images/portion/nasi-m.jpg" },
+          { "label": "L", "grams": 220, "image": "/images/portion/nasi-l.jpg" }
+        ]
+      },
+      "household": [
+        { "tool": "Mangkok", "amount": 1, "grams": 180 },
+        { "tool": "Sendok", "amount": 6, "grams": 150 }
+      ],
+      "unit": [
+        { "name": "Piece", "amount": 1, "grams": 150 }
+      ]
+    }
+  },
+  {
+    "foodId": "food-3",
+    "modes": {
+      "grams": { "default": 250, "min": 50, "max": 700, "step": 10 },
+      "visual": {
+        "sizes": [
+          { "label": "S", "grams": 180, "image": "/images/portion/teh-s.jpg" },
+          { "label": "M", "grams": 250, "image": "/images/portion/teh-m.jpg" },
+          { "label": "L", "grams": 350, "image": "/images/portion/teh-l.jpg" }
+        ]
+      },
+      "household": [
+        { "tool": "Gelas", "amount": 1, "grams": 250 }
+      ],
+      "unit": [
+        { "name": "Pack", "amount": 1, "grams": 330 }
+      ]
+    }
+  },
+  {
+    "foodId": "food-4",
+    "modes": {
+      "grams": { "default": 30, "min": 10, "max": 200, "step": 5 },
+      "visual": {
+        "sizes": [
+          { "label": "S", "grams": 20, "image": "/images/portion/roti-s.jpg" },
+          { "label": "M", "grams": 30, "image": "/images/portion/roti-m.jpg" },
+          { "label": "L", "grams": 45, "image": "/images/portion/roti-l.jpg" }
+        ]
+      },
+      "household": [
+        { "tool": "Sendok", "amount": 2, "grams": 30 }
+      ],
+      "unit": [
+        { "name": "Slice", "amount": 1, "grams": 30 }
+      ]
+    }
+  }
+]
