@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { PortionMode, PortionSelection, RecallItem } from "@/types/recall";
 
 interface PortionEstimationModalProps {
@@ -11,15 +11,19 @@ interface PortionEstimationModalProps {
 }
 
 const modes: Array<{ key: PortionMode; label: string; helper: string }> = [
-  { key: "grams", label: "Mode A: Direct Grams", helper: "Input exact gram amount." },
-  { key: "visual", label: "Mode B: Visual/Photo", helper: "Pick visual S/M/L reference." },
+  { key: "visual", label: "Dengan Foto Porsi", helper: "Pilih porsi yang paling mirip (S/M/L)." },
   {
     key: "household",
-    label: "Mode C: Household",
-    helper: "Use Gelas, Mangkok, or Sendok.",
+    label: "Dengan Alat Rumah Tangga",
+    helper: "Gunakan gelas, mangkok, atau sendok.",
   },
-  { key: "unit", label: "Mode D: Standard Units", helper: "Use Slice, Piece, or Pack." },
+  { key: "unit", label: "Dengan Satuan Produk", helper: "Gunakan slice, piece, atau pack." },
+  { key: "grams", label: "Gram Langsung", helper: "Masukkan jumlah gram secara langsung." },
 ];
+
+const visualSteps = ["S", "M", "L"] as const;
+const fractionValues = [0, 0.25, 0.5, 0.75] as const;
+const fractionLabels = ["0", "1/4", "1/2", "3/4"] as const;
 
 export function PortionEstimationModal({
   open,
@@ -27,185 +31,388 @@ export function PortionEstimationModal({
   onClose,
   onSave,
 }: PortionEstimationModalProps) {
+  const [phase, setPhase] = useState<"method" | "amount">("method");
   const [mode, setMode] = useState<PortionMode>("grams");
   const [grams, setGrams] = useState<number>(100);
   const [visualSize, setVisualSize] = useState<"S" | "M" | "L">("M");
+  const [visualIndex, setVisualIndex] = useState(1);
   const [householdTool, setHouseholdTool] = useState<"Gelas" | "Mangkok" | "Sendok">("Gelas");
-  const [householdAmount, setHouseholdAmount] = useState<number>(1);
+  const [householdWhole, setHouseholdWhole] = useState<number>(1);
+  const [householdFractionIndex, setHouseholdFractionIndex] = useState(0);
   const [unitName, setUnitName] = useState<"Slice" | "Piece" | "Pack">("Piece");
-  const [unitAmount, setUnitAmount] = useState<number>(1);
+  const [unitWhole, setUnitWhole] = useState<number>(1);
+  const [unitFractionIndex, setUnitFractionIndex] = useState(0);
+
+  useEffect(() => {
+    if (!open) return;
+
+    setPhase("method");
+    setMode("visual");
+    setVisualIndex(1);
+    setVisualSize("M");
+  }, [item?.id, open]);
 
   const preview = useMemo(() => {
-    if (mode === "grams") return `${grams} g`;
+    if (mode === "grams") return `${Math.max(1, grams)} gram`;
     if (mode === "visual") return `Visual ${visualSize}`;
-    if (mode === "household") return `${householdAmount} ${householdTool}`;
-    return `${unitAmount} ${unitName}`;
-  }, [grams, householdAmount, householdTool, mode, unitAmount, unitName, visualSize]);
+    if (mode === "household") {
+      const total = householdWhole + fractionValues[householdFractionIndex];
+      return `${total} ${householdTool}`;
+    }
+
+    const total = unitWhole + fractionValues[unitFractionIndex];
+    return `${total} ${unitName}`;
+  }, [
+    grams,
+    householdFractionIndex,
+    householdTool,
+    householdWhole,
+    mode,
+    unitFractionIndex,
+    unitName,
+    unitWhole,
+    visualSize,
+  ]);
+
+  const getVisualByIndex = (index: number): "S" | "M" | "L" => {
+    if (index <= 0) return "S";
+    if (index >= 2) return "L";
+    return "M";
+  };
+
+  const saveSelection = () => {
+    if (mode === "grams") {
+      onSave({ mode, grams: Math.max(1, grams) });
+      return;
+    }
+
+    if (mode === "visual") {
+      onSave({ mode, visualSize });
+      return;
+    }
+
+    if (mode === "household") {
+      const total = Math.max(0.25, householdWhole + fractionValues[householdFractionIndex]);
+      onSave({
+        mode,
+        household: { tool: householdTool, amount: Number(total.toFixed(2)) },
+      });
+      return;
+    }
+
+    const total = Math.max(0.25, unitWhole + fractionValues[unitFractionIndex]);
+    onSave({
+      mode,
+      unit: { name: unitName, amount: Number(total.toFixed(2)) },
+    });
+  };
 
   if (!open) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4">
-      <div className="w-full max-w-2xl rounded-3xl bg-white p-6 shadow-card">
+      <div className="w-full max-w-3xl rounded-2xl border border-slate-300 bg-[#efefef] p-5 shadow-card">
         <div className="flex items-start justify-between">
           <div>
-            <h3 className="text-2xl font-semibold">Portion Estimation</h3>
-            <p className="text-sm text-slate-500">{item?.quickText ?? "Selected item"}</p>
+            <h3 className="text-2xl font-semibold text-slate-900 md:text-3xl">Estimasi Porsi</h3>
+            <p className="text-sm text-slate-600">Item: {item?.quickText ?? "Item terpilih"}</p>
           </div>
-          <button
-            type="button"
-            className="rounded-xl border border-slate-300 px-3 py-2 text-sm"
-            onClick={onClose}
-          >
-            Close
+          <button type="button" className="rounded bg-[#b4b4b4] px-4 py-2 text-sm font-semibold text-white" onClick={onClose}>
+            Tutup
           </button>
         </div>
 
-        <div className="mt-5 grid gap-2 md:grid-cols-2">
-          {modes.map((entry) => (
-            <button
-              key={entry.key}
-              type="button"
-              onClick={() => setMode(entry.key)}
-              className={`rounded-2xl border p-3 text-left transition ${
-                mode === entry.key
-                  ? "border-atlas-gold bg-amber-50"
-                  : "border-slate-200 bg-white hover:bg-slate-50"
-              }`}
-            >
-              <p className="font-semibold">{entry.label}</p>
-              <p className="text-xs text-slate-500">{entry.helper}</p>
-            </button>
-          ))}
-        </div>
-
-        <div className="mt-5 rounded-2xl bg-slate-50 p-4">
-          {mode === "grams" ? (
-            <label className="block">
-              <span className="text-sm font-medium">Grams</span>
-              <input
-                type="number"
-                min={1}
-                value={grams}
-                onChange={(event) => setGrams(Number(event.target.value || 0))}
-                className="mt-2 w-full rounded-xl border border-slate-300 px-3 py-2"
-              />
-            </label>
-          ) : null}
-
-          {mode === "visual" ? (
-            <div>
-              <p className="text-sm font-medium">Photo Portion</p>
-              <div className="mt-3 grid grid-cols-3 gap-3">
-                {(["S", "M", "L"] as const).map((size) => (
-                  <button
-                    key={size}
-                    type="button"
-                    onClick={() => setVisualSize(size)}
-                    className={`rounded-2xl border p-4 text-center ${
-                      visualSize === size
-                        ? "border-atlas-cyan bg-cyan-50"
-                        : "border-slate-300 bg-white"
-                    }`}
-                  >
-                    <span className="text-lg font-semibold">{size}</span>
-                    <p className="text-xs text-slate-500">Visual ref</p>
-                  </button>
-                ))}
+        {phase === "method" ? (
+          <section className="mt-5 space-y-4">
+            <div className="rounded border border-slate-300 bg-[#dedede] px-5 py-4">
+              <div className="flex items-start justify-between gap-4">
+                <p className="max-w-2xl text-base text-slate-800 md:text-lg">
+                  Bagaimana Anda ingin mengestimasi porsi <strong>{item?.quickText ?? "item ini"}</strong>?
+                </p>
+                <button type="button" className="rounded bg-[#b4b4b4] px-4 py-2 text-sm font-semibold text-white">
+                  Bantuan
+                </button>
               </div>
             </div>
-          ) : null}
 
-          {mode === "household" ? (
             <div className="grid gap-3 md:grid-cols-2">
-              <label className="block">
-                <span className="text-sm font-medium">Tool</span>
-                <select
-                  className="mt-2 w-full rounded-xl border border-slate-300 px-3 py-2"
-                  value={householdTool}
-                  onChange={(event) =>
-                    setHouseholdTool(event.target.value as "Gelas" | "Mangkok" | "Sendok")
-                  }
+              {modes.map((entry) => (
+                <button
+                  key={entry.key}
+                  type="button"
+                  onClick={() => setMode(entry.key)}
+                  className={`rounded border p-4 text-left transition ${
+                    mode === entry.key
+                      ? "border-atlas-gold bg-amber-50"
+                      : "border-slate-300 bg-white hover:bg-slate-50"
+                  }`}
                 >
-                  <option>Gelas</option>
-                  <option>Mangkok</option>
-                  <option>Sendok</option>
-                </select>
-              </label>
-              <label className="block">
-                <span className="text-sm font-medium">Amount</span>
-                <input
-                  type="number"
-                  min={0.25}
-                  step={0.25}
-                  value={householdAmount}
-                  onChange={(event) => setHouseholdAmount(Number(event.target.value || 0))}
-                  className="mt-2 w-full rounded-xl border border-slate-300 px-3 py-2"
-                />
-              </label>
+                  <p className="text-sm font-semibold text-slate-900 md:text-base">{entry.label}</p>
+                  <p className="mt-1 text-xs text-slate-500">{entry.helper}</p>
+                </button>
+              ))}
             </div>
-          ) : null}
 
-          {mode === "unit" ? (
-            <div className="grid gap-3 md:grid-cols-2">
-              <label className="block">
-                <span className="text-sm font-medium">Unit</span>
+            <div className="flex justify-end">
+              <button
+                type="button"
+                className="rounded bg-green-700 px-5 py-2.5 text-sm font-semibold text-white md:text-base"
+                onClick={() => setPhase("amount")}
+              >
+                Lanjut
+              </button>
+            </div>
+          </section>
+        ) : null}
+
+        {phase === "amount" ? (
+          <section className="mt-5 space-y-4">
+            <button
+              type="button"
+              className="text-sm text-blue-700 underline"
+              onClick={() => setPhase("method")}
+            >
+              Kembali pilih metode
+            </button>
+
+            <div className="rounded border border-slate-300 bg-[#dedede] px-5 py-4">
+              <div className="flex items-start justify-between gap-4">
+                <p className="max-w-2xl text-base text-slate-800 md:text-lg">
+                  {mode === "visual"
+                    ? "Pilih ukuran visual yang paling mendekati porsi Anda."
+                    : mode === "household"
+                      ? `Berapa banyak ${householdTool.toLowerCase()} ${item?.quickText ?? "item"} yang Anda konsumsi?`
+                      : mode === "unit"
+                        ? `Berapa banyak ${unitName.toLowerCase()} ${item?.quickText ?? "item"} yang Anda konsumsi?`
+                        : "Masukkan estimasi gram untuk item ini."}
+                </p>
+                <button type="button" className="rounded bg-[#b4b4b4] px-4 py-2 text-sm font-semibold text-white">
+                  Bantuan
+                </button>
+              </div>
+            </div>
+
+            {mode === "visual" ? (
+              <div className="space-y-4">
+                <div className="rounded border border-slate-300 bg-white p-4">
+                  <div className="grid grid-cols-3 gap-3">
+                    {visualSteps.map((size) => (
+                      <button
+                        key={size}
+                        type="button"
+                        onClick={() => {
+                          setVisualSize(size);
+                          setVisualIndex(size === "S" ? 0 : size === "M" ? 1 : 2);
+                        }}
+                        className={`rounded border p-4 text-center ${
+                          visualSize === size ? "border-atlas-cyan bg-cyan-50" : "border-slate-300"
+                        }`}
+                      >
+                        <div className="mx-auto mb-2 h-14 w-14 rounded-full bg-slate-200" />
+                        <p className="font-semibold">{size}</p>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <button
+                    type="button"
+                    className="rounded bg-[#b4b4b4] px-4 py-2 text-lg font-semibold text-white"
+                    onClick={() => {
+                      const next = Math.max(0, visualIndex - 1);
+                      setVisualIndex(next);
+                      setVisualSize(getVisualByIndex(next));
+                    }}
+                  >
+                    -
+                  </button>
+                  <p className="text-sm text-slate-600">Ukuran saat ini: {visualSize}</p>
+                  <button
+                    type="button"
+                    className="rounded bg-[#b4b4b4] px-4 py-2 text-lg font-semibold text-white"
+                    onClick={() => {
+                      const next = Math.min(2, visualIndex + 1);
+                      setVisualIndex(next);
+                      setVisualSize(getVisualByIndex(next));
+                    }}
+                  >
+                    +
+                  </button>
+                </div>
+              </div>
+            ) : null}
+
+            {mode === "household" ? (
+              <div className="space-y-4">
+                <div className="flex flex-wrap gap-2">
+                  {(["Gelas", "Mangkok", "Sendok"] as const).map((tool) => (
+                    <button
+                      key={tool}
+                      type="button"
+                      className={`rounded border px-3 py-2 text-sm font-semibold ${
+                        householdTool === tool
+                          ? "border-atlas-gold bg-amber-50"
+                          : "border-slate-300 bg-white"
+                      }`}
+                      onClick={() => setHouseholdTool(tool)}
+                    >
+                      {tool}
+                    </button>
+                  ))}
+                </div>
+
+                <div className="flex items-center gap-4">
+                  <div className="space-y-2 text-center">
+                    <button
+                      type="button"
+                      className="h-10 w-12 rounded bg-[#b4b4b4] text-white"
+                      onClick={() => setHouseholdWhole((value) => value + 1)}
+                    >
+                      ▲
+                    </button>
+                    <p className="text-2xl">{householdWhole}</p>
+                    <button
+                      type="button"
+                      className="h-10 w-12 rounded bg-[#b4b4b4] text-white"
+                      onClick={() => setHouseholdWhole((value) => Math.max(0, value - 1))}
+                    >
+                      ▼
+                    </button>
+                    <p className="text-xs text-slate-500">Utuh</p>
+                  </div>
+
+                  <p className="text-xl font-semibold">dan</p>
+
+                  <div className="space-y-2 text-center">
+                    <button
+                      type="button"
+                      className="h-10 w-12 rounded bg-[#b4b4b4] text-white"
+                      onClick={() =>
+                        setHouseholdFractionIndex((value) => (value + 1) % fractionValues.length)
+                      }
+                    >
+                      ▲
+                    </button>
+                    <p className="text-2xl">{fractionLabels[householdFractionIndex]}</p>
+                    <button
+                      type="button"
+                      className="h-10 w-12 rounded bg-[#b4b4b4] text-white"
+                      onClick={() =>
+                        setHouseholdFractionIndex(
+                          (value) => (value - 1 + fractionValues.length) % fractionValues.length,
+                        )
+                      }
+                    >
+                      ▼
+                    </button>
+                    <p className="text-xs text-slate-500">Pecahan</p>
+                  </div>
+                </div>
+              </div>
+            ) : null}
+
+            {mode === "unit" ? (
+              <div className="space-y-4">
                 <select
-                  className="mt-2 w-full rounded-xl border border-slate-300 px-3 py-2"
+                  className="w-full rounded border border-slate-300 bg-white px-3 py-2 text-sm"
                   value={unitName}
-                  onChange={(event) =>
-                    setUnitName(event.target.value as "Slice" | "Piece" | "Pack")
-                  }
+                  onChange={(event) => setUnitName(event.target.value as "Slice" | "Piece" | "Pack")}
                 >
                   <option>Slice</option>
                   <option>Piece</option>
                   <option>Pack</option>
                 </select>
-              </label>
-              <label className="block">
-                <span className="text-sm font-medium">Amount</span>
-                <input
-                  type="number"
-                  min={1}
-                  value={unitAmount}
-                  onChange={(event) => setUnitAmount(Number(event.target.value || 0))}
-                  className="mt-2 w-full rounded-xl border border-slate-300 px-3 py-2"
-                />
-              </label>
-            </div>
-          ) : null}
-        </div>
 
-        <div className="mt-4 flex items-center justify-between">
-          <p className="text-sm text-slate-600">Preview: {preview}</p>
-          <button
-            type="button"
-            className="rounded-xl bg-atlas-gold px-4 py-2 font-semibold text-slate-900"
-            onClick={() => {
-              if (mode === "grams") {
-                onSave({ mode, grams });
-                return;
-              }
-              if (mode === "visual") {
-                onSave({ mode, visualSize });
-                return;
-              }
-              if (mode === "household") {
-                onSave({
-                  mode,
-                  household: { tool: householdTool, amount: householdAmount },
-                });
-                return;
-              }
-              onSave({
-                mode,
-                unit: { name: unitName, amount: unitAmount },
-              });
-            }}
-          >
-            Save Portion
-          </button>
-        </div>
+                <div className="flex items-center gap-4">
+                  <div className="space-y-2 text-center">
+                    <button
+                      type="button"
+                      className="h-10 w-12 rounded bg-[#b4b4b4] text-white"
+                      onClick={() => setUnitWhole((value) => value + 1)}
+                    >
+                      ▲
+                    </button>
+                    <p className="text-2xl">{unitWhole}</p>
+                    <button
+                      type="button"
+                      className="h-10 w-12 rounded bg-[#b4b4b4] text-white"
+                      onClick={() => setUnitWhole((value) => Math.max(0, value - 1))}
+                    >
+                      ▼
+                    </button>
+                    <p className="text-xs text-slate-500">Utuh</p>
+                  </div>
+
+                  <p className="text-xl font-semibold">dan</p>
+
+                  <div className="space-y-2 text-center">
+                    <button
+                      type="button"
+                      className="h-10 w-12 rounded bg-[#b4b4b4] text-white"
+                      onClick={() => setUnitFractionIndex((value) => (value + 1) % fractionValues.length)}
+                    >
+                      ▲
+                    </button>
+                    <p className="text-2xl">{fractionLabels[unitFractionIndex]}</p>
+                    <button
+                      type="button"
+                      className="h-10 w-12 rounded bg-[#b4b4b4] text-white"
+                      onClick={() =>
+                        setUnitFractionIndex(
+                          (value) => (value - 1 + fractionValues.length) % fractionValues.length,
+                        )
+                      }
+                    >
+                      ▼
+                    </button>
+                    <p className="text-xs text-slate-500">Pecahan</p>
+                  </div>
+                </div>
+              </div>
+            ) : null}
+
+            {mode === "grams" ? (
+              <div className="space-y-4">
+                <div className="flex items-center gap-3">
+                  <button
+                    type="button"
+                    className="rounded bg-[#b4b4b4] px-4 py-2 text-lg font-semibold text-white"
+                    onClick={() => setGrams((value) => Math.max(1, value - 5))}
+                  >
+                    -
+                  </button>
+                  <input
+                    type="number"
+                    min={1}
+                    value={grams}
+                    onChange={(event) => setGrams(Number(event.target.value || 0))}
+                    className="w-40 rounded border border-slate-300 bg-white px-3 py-2 text-center text-lg"
+                  />
+                  <button
+                    type="button"
+                    className="rounded bg-[#b4b4b4] px-4 py-2 text-lg font-semibold text-white"
+                    onClick={() => setGrams((value) => value + 5)}
+                  >
+                    +
+                  </button>
+                  <p className="text-sm text-slate-600">gram</p>
+                </div>
+              </div>
+            ) : null}
+
+            <div className="flex items-center justify-between border-t border-slate-300 pt-4">
+              <p className="text-sm text-slate-600">Preview: {preview}</p>
+              <button
+                type="button"
+                className="rounded bg-green-700 px-5 py-2.5 text-sm font-semibold text-white md:text-base"
+                onClick={saveSelection}
+              >
+                Saya sudah sebanyak itu
+              </button>
+            </div>
+          </section>
+        ) : null}
       </div>
     </div>
   );

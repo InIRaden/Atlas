@@ -20,7 +20,7 @@ interface RecallSessionState {
     context: "weekday" | "weekend";
   }) => void;
   setPass: (pass: 1 | 2 | 3 | 4 | 5 | 6) => void;
-  addQuickItem: (mealType: MealType, quickText: string) => void;
+  addQuickItem: (mealType: MealType, quickText: string, occasionKey?: string) => void;
   setMatch: (itemId: string, foodId: string | undefined, status: MatchStatus) => void;
   setPortion: (itemId: string, portion: PortionSelection) => void;
   updateStatus: (status: SessionStatus) => void;
@@ -73,7 +73,7 @@ export const useRecallSessionStore = create<RecallSessionState>((set, get) => ({
       };
     }),
 
-  addQuickItem: (mealType, quickText) =>
+  addQuickItem: (mealType, quickText, occasionKey) =>
     set((state) => {
       const active = getActiveSession(state);
       if (!active || !quickText.trim()) return state;
@@ -81,6 +81,7 @@ export const useRecallSessionStore = create<RecallSessionState>((set, get) => ({
       const item: RecallItem = {
         id: nanoid(),
         mealType,
+        occasionKey,
         quickText,
         matchStatus: "Custom",
       };

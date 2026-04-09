@@ -30,6 +30,7 @@ export interface NutrientBreakdown {
 export interface RecallItem {
   id: string;
   mealType: MealType;
+  occasionKey?: string;
   quickText: string;
   matchedFoodId?: string;
   matchStatus: MatchStatus;
