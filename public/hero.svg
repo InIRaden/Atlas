@@ -1,0 +1,27 @@
+<svg width="980" height="690" viewBox="0 0 980 690" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="980" height="690" fill="none"/>
+  <rect x="430" y="520" width="430" height="34" rx="17" fill="#D9D9DC"/>
+  <rect x="520" y="232" width="320" height="204" rx="16" fill="#F0C6B4"/>
+  <rect x="472" y="132" width="250" height="170" rx="14" transform="rotate(2 472 132)" fill="#F2E7E0" stroke="#1E2127" stroke-width="4"/>
+  <rect x="540" y="208" width="116" height="48" rx="24" fill="#E8E8EA" stroke="#D6D6DA"/>
+  <text x="555" y="240" font-family="Manrope, Segoe UI, sans-serif" font-size="34" font-weight="700" fill="#1E2127">08:00am</text>
+  <rect x="640" y="298" width="178" height="48" rx="12" fill="#EE672D"/>
+  <text x="658" y="334" font-family="Manrope, Segoe UI, sans-serif" font-size="42" font-weight="700" fill="white">Breakfast</text>
+  <rect x="330" y="565" width="420" height="18" rx="9" fill="#23262D"/>
+  <rect x="458" y="424" width="155" height="131" rx="18" fill="#EE672D"/>
+  <rect x="466" y="430" width="139" height="120" rx="16" fill="#1E2127"/>
+  <rect x="482" y="448" width="106" height="88" rx="8" fill="#F0C6B4"/>
+  <circle cx="350" cy="340" r="56" fill="#1E2127"/>
+  <path d="M296 399C296 366 323 339 356 339H361C394 339 421 366 421 399V447H296V399Z" fill="#1E2127"/>
+  <path d="M335 477H437C455 477 468 493 465 510L458 565H306L294 515C290 494 306 477 335 477Z" fill="#1E2127"/>
+  <path d="M455 386C488 381 523 396 540 430L582 512C592 531 579 554 558 554H469C449 554 433 533 438 513L455 386Z" fill="#E9E9EA" stroke="#1E2127" stroke-width="4"/>
+  <path d="M585 335L638 299" stroke="#1E2127" stroke-width="10" stroke-linecap="round"/>
+  <circle cx="275" cy="214" r="46" fill="#EE672D"/>
+  <path d="M230 214C230 186 252 164 280 164C308 164 330 186 330 214" stroke="#1E2127" stroke-width="4"/>
+  <path d="M704 134L764 134" stroke="#1E2127" stroke-width="5" stroke-linecap="round"/>
+  <path d="M704 146L764 146" stroke="#1E2127" stroke-width="5" stroke-linecap="round"/>
+  <circle cx="840" cy="64" r="26" fill="#EE672D"/>
+  <path d="M766 64H820" stroke="#1E2127" stroke-width="5" stroke-linecap="round"/>
+  <path d="M772 108L828 108" stroke="#1E2127" stroke-width="5" stroke-linecap="round"/>
+  <path d="M772 228L810 240" stroke="#EE672D" stroke-width="10" stroke-linecap="round"/>
+</svg>
