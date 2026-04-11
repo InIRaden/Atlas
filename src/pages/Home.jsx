@@ -1,60 +1,67 @@
-import { useState } from "react";
+import { useEffect } from "react";
 
 export default function Home() {
-  const [isOpen, setIsOpen] = useState(false);
+  const goToDemo = () => {
+    window.location.hash = "#/demo";
+  };
 
   return (
     <div className="page-shell">
+      {/* --- NAVBAR --- */}
       <header className="topbar">
-        <a className="brand" href="#" aria-label="Atlas Food beranda">
-          <img src="/logo.svg" alt="Atlas Food" />
-        </a>
+        <div className="container topbar-inner">
+          <div className="brand-group">
+            <img src="/logo-atlas.svg" alt="Atlas Food Logo" className="logo-atlas-img" />
+            <span className="brand-divider"></span>
+            <img src="/logo-brin.png" alt="BRIN Logo" className="logo-brin-img" />
+          </div>
 
-        <button
-          className="menu-toggle"
-          type="button"
-          aria-expanded={isOpen}
-          aria-controls="site-nav"
-          onClick={() => setIsOpen((prev) => !prev)}
-        >
-          Menu
-        </button>
-
-        <nav className={`site-nav ${isOpen ? "open" : ""}`} id="site-nav" aria-label="Navigasi utama">
-          <a className="active" href="#">Beranda</a>
-          <a href="#">Tentang</a>
-          <a href="#">Metodologi</a>
-          <a href="#">Fitur</a>
-          <a href="#">Sumber daya</a>
-          <a className="contact-btn" href="#">Hubungi Kami</a>
-        </nav>
+          <nav className="site-nav">
+            <a href="#" className="active">Beranda</a>
+            <a href="#">Metodologi Riset BRIN</a>
+            <a href="#">Analisis Nutrisi Cerdas</a>
+            <a href="#">Data Riset</a>
+            <a href="#">Kolaborasi Publikasi</a>
+            <a href="#">Hubungi Tim Riset</a>
+          </nav>
+        </div>
       </header>
 
-      <main className="hero-wrap">
-        <section className="hero-copy">
-          <span className="hero-kicker" aria-hidden="true">
-            {'\''}
-          </span>
-          <h1>Cara mudah mengukur pola makan harian</h1>
-          <p>
-            Atlas Food adalah sistem dietary recall berbasis multiple-pass yang membantu pengguna
-            mencatat intake makanan dan minuman secara lebih akurat.
-          </p>
-          <button
-            type="button"
-            className="demo-btn"
-            onClick={() => {
-              window.location.hash = "#/demo";
-            }}
-          >
-            Coba Demo Alur Final
-          </button>
-        </section>
+      {/* --- HERO SECTION --- */}
+      <main className="hero-container">
+        <div className="container hero-wrap">
+          <div className="hero-copy">
+            <h1>Analisis & Optimalkan Asupan Nutrisi Harian Anda</h1>
+            <p>
+              Atlas Food, hasil kolaborasi riset strategis dengan BRIN,
+              menghadirkan sistem Nutrisi Recall Cerdas berbasis data ilmiah.
+              Lacak, catat, dan analisis asupan nutrisi Anda dengan akurasi tinggi,
+              didukung oleh metodologi riset nasional.
+            </p>
+            <button className="demo-btn" onClick={goToDemo}>
+              Mulai Analisis Pola Makan
+            </button>
+          </div>
 
-        <section className="hero-media" aria-label="Ilustrasi Atlas Food">
-          <img src="/hero.svg" alt="Ilustrasi Atlas Food" />
-        </section>
+          <div className="hero-media">
+            <img src="/hero-ipad.png" alt="Dashboard Atlas Food" className="hero-image-main" />
+          </div>
+        </div>
       </main>
+
+      {/* --- FOOTER --- */}
+      <footer className="home-footer">
+        <div className="container footer-inner">
+          <div className="footer-content">
+            <p>
+              © 2026 Atlas Food. Proyek Penelitian Kerjasama 
+              <strong> Universitas Pendidikan Indonesia</strong> & 
+              <strong> Badan Riset dan Inovasi Nasional (BRIN)</strong>
+            </p>
+            <small>Sistem Informasi Nutrisi Terintegrasi untuk Inovasi Kesehatan Nasional</small>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
