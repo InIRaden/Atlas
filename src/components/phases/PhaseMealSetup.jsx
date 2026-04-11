@@ -1,8 +1,9 @@
-export default function PhaseMealSetup({
-  mealSlots, updateMealTime,
-  newMealName, setNewMealName,
-  addMealSlot
-}) {
+import { useAtlas } from "../../context/AtlasContext";
+
+export default function PhaseMealSetup({ addMealSlot, updateMealTime }) {
+  // Data ini sekarang diambil dari brankas, bukan dari props lagi
+  const { mealSlots, newMealName, setNewMealName } = useAtlas();
+
   return (
     <section className="flow-card" aria-live="polite">
       <h3>Meal occasion setup</h3>

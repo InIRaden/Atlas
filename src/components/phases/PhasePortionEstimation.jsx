@@ -1,8 +1,11 @@
-export default function PhasePortionEstimation({
-  portionMode, setPortionMode,
-  portionScale, setPortionScale,
-  portionGram, setPortionGram
-}) {
+import { useAtlas } from "../../context/AtlasContext";
+
+export default function PhasePortionEstimation() {
+  const {
+    portionMode, setPortionMode, portionScale, setPortionScale,
+    portionGram, setPortionGram
+  } = useAtlas();
+
   return (
     <section className="flow-card" aria-live="polite">
       <h3>Portion estimation</h3>

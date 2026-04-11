@@ -1,0 +1,80 @@
+[
+  {
+    "id": "food-001",
+    "name": "Nasi Goreng Telur",
+    "englishName": "Fried rice, egg",
+    "category": "Makanan utama",
+    "brand": "Umum",
+    "nutritionPer100g": {
+      "calories": 185,
+      "protein": 4.5,
+      "fat": 6.2,
+      "carbs": 27.5
+    }
+  },
+  {
+    "id": "food-002",
+    "name": "Teh Manis Dingin",
+    "englishName": "Sweetened iced tea",
+    "category": "Minuman",
+    "brand": "Umum",
+    "nutritionPer100g": {
+      "calories": 38,
+      "protein": 0.1,
+      "fat": 0,
+      "carbs": 9.5
+    }
+  },
+  {
+    "id": "food-003",
+    "name": "Pisang Goreng",
+    "englishName": "Banana fritter",
+    "category": "Snack",
+    "brand": "Umum",
+    "nutritionPer100g": {
+      "calories": 250,
+      "protein": 2.5,
+      "fat": 11.2,
+      "carbs": 38.0
+    }
+  },
+  {
+    "id": "food-004",
+    "name": "Ayam Goreng Tepung",
+    "englishName": "Fried chicken, battered",
+    "category": "Lauk hewani",
+    "brand": "KFC (Similar)",
+    "nutritionPer100g": {
+      "calories": 295,
+      "protein": 14.5,
+      "fat": 18.0,
+      "carbs": 12.5
+    }
+  },
+  {
+    "id": "food-005",
+    "name": "Kopi Hitam (Pakai Gula)",
+    "englishName": "Black coffee, sweetened",
+    "category": "Minuman",
+    "brand": "Umum",
+    "nutritionPer100g": {
+      "calories": 18,
+      "protein": 0.1,
+      "fat": 0,
+      "carbs": 4.5
+    }
+  },
+  {
+    "id": "food-006",
+    "name": "Mie Instan Goreng",
+    "englishName": "Instant fried noodles",
+    "category": "Makanan utama",
+    "brand": "Indomie",
+    "nutritionPer100g": {
+      "calories": 480,
+      "protein": 9.5,
+      "fat": 19.5,
+      "carbs": 62.0
+    }
+  }
+]

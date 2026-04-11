@@ -1,7 +1,8 @@
-export default function PhaseQuickList({
-  foodNotes, setFoodNotes,
-  drinkNotes, setDrinkNotes
-}) {
+import { useAtlas } from "../../context/AtlasContext";
+
+export default function PhaseQuickList() {
+  const { foodNotes, setFoodNotes, drinkNotes, setDrinkNotes } = useAtlas();
+
   return (
     <section className="flow-card" aria-live="polite">
       <h3>Quick list (first pass recall)</h3>

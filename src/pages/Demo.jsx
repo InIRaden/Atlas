@@ -10,6 +10,7 @@ import PhaseMealReview from "../components/phases/PhaseMealReview";
 import PhaseDayReview from "../components/phases/PhaseDayReview";
 import PhaseSubmit from "../components/phases/PhaseSubmit";
 import PhaseResult from "../components/phases/PhaseResult";
+import { useAtlas } from "../context/AtlasContext";
 
 function getCurrentRoute() {
   return window.location.hash === "#/demo" ? "demo" : "home";
@@ -31,40 +32,37 @@ const FINAL_PHASES = [
 
 const STORAGE_KEY = "atlas-food-final-flow-v1";
 
-export default function Demo() 
-{
+export default function Demo() {
+  // 3 BARIS INI YANG TADI KETIDAKSENGAJAAN TERHAPUS:
   const [route, setRoute] = useState(getCurrentRoute);
   const [isOpen, setIsOpen] = useState(false);
   const [flowIndex, setFlowIndex] = useState(0);
 
-  const [entryMode, setEntryMode] = useState("login");
-  const [sessionDate, setSessionDate] = useState("2026-04-10");
-  const [dayType, setDayType] = useState("weekday");
-
-  const [newMealName, setNewMealName] = useState("");
-  const [mealSlots, setMealSlots] = useState([
-    { name: "Sarapan", time: "07:30" },
-    { name: "Makan Siang", time: "12:30" },
-    { name: "Makan Malam", time: "19:00" },
-    { name: "Snack", time: "16:00" }
-  ]);
-
-  const [foodNotes, setFoodNotes] = useState("Nasi goreng\nTelur dadar\nSambal");
-  const [drinkNotes, setDrinkNotes] = useState("Teh manis\nAir putih");
-
-  const [matchStatus, setMatchStatus] = useState("matched");
-  const [missingType, setMissingType] = useState("homemade");
-  const [recipeIngredients, setRecipeIngredients] = useState("");
-  const [recipeComposition, setRecipeComposition] = useState("");
-  const [missingFoodName, setMissingFoodName] = useState("");
-  const [missingBrand, setMissingBrand] = useState("");
-  const [missingDescription, setMissingDescription] = useState("");
-  const [missingPortionNotes, setMissingPortionNotes] = useState("");
-  const [portionMode, setPortionMode] = useState("visual");
-  const [portionScale, setPortionScale] = useState("same");
-  const [portionGram, setPortionGram] = useState("150");
+  // State notice kita biarkan di sini karena hanya dipakai sementara
   const [notice, setNotice] = useState("");
 
+  // Buka brankas AtlasContext untuk mengambil semua data
+  const {
+    entryMode, setEntryMode,
+    sessionDate, setSessionDate,
+    dayType, setDayType,
+    mealSlots, setMealSlots,
+    newMealName, setNewMealName,
+    foodNotes, setFoodNotes,
+    drinkNotes, setDrinkNotes,
+    matchStatus, setMatchStatus,
+    missingType, setMissingType,
+    recipeIngredients, setRecipeIngredients,
+    recipeComposition, setRecipeComposition,
+    missingFoodName, setMissingFoodName,
+    missingBrand, setMissingBrand,
+    missingDescription, setMissingDescription,
+    missingPortionNotes, setMissingPortionNotes,
+    portionMode, setPortionMode,
+    portionScale, setPortionScale,
+    portionGram, setPortionGram
+  } = useAtlas();
+  
   useEffect(() => {
     function handleHashChange() {
       setRoute(getCurrentRoute());
@@ -321,210 +319,20 @@ export default function Demo()
   }
 
   function renderPhaseContent() {
-    if (activePhase.id === "food-matching") {
-        return (
-          <PhaseFoodMatching 
-            matchStatus={matchStatus} 
-            setMatchStatus={setMatchStatus}
-            missingType={missingType} 
-            setMissingType={setMissingType}
-            recipeIngredients={recipeIngredients} 
-            setRecipeIngredients={setRecipeIngredients}
-            recipeComposition={recipeComposition} 
-            setRecipeComposition={setRecipeComposition}
-            missingFoodName={missingFoodName} 
-            setMissingFoodName={setMissingFoodName}
-            missingBrand={missingBrand} 
-            setMissingBrand={setMissingBrand}
-            missingDescription={missingDescription} 
-            setMissingDescription={setMissingDescription}
-            missingPortionNotes={missingPortionNotes} 
-            setMissingPortionNotes={setMissingPortionNotes}
-          />
-      );
+      if (activePhase.id === "start") return <PhaseStart />;
+      if (activePhase.id === "meal-setup") return <PhaseMealSetup addMealSlot={addMealSlot} updateMealTime={updateMealTime} />;
+      if (activePhase.id === "quick-list") return <PhaseQuickList />;
+      if (activePhase.id === "food-matching") return <PhaseFoodMatching />;
+      if (activePhase.id === "associated-prompts") return <PhaseAssociatedPrompts goToPhase={goToPhase} setNotice={setNotice} nextPhase={nextPhase} />;
+      if (activePhase.id === "detail-questions") return <PhaseDetailQuestions />;
+      if (activePhase.id === "portion") return <PhasePortionEstimation />;
+      if (activePhase.id === "meal-review") return <PhaseMealReview />;
+      if (activePhase.id === "day-review") return <PhaseDayReview goToPhase={goToPhase} setNotice={setNotice} />;
+      if (activePhase.id === "submit") return <PhaseSubmit goToPhase={goToPhase} setNotice={setNotice} />;
+      
+      return <PhaseResult exportData={exportData} />;
     }
-
-    if (activePhase.id === "meal-setup") {
-        return (
-          <PhaseMealSetup
-            mealSlots={mealSlots}
-            updateMealTime={updateMealTime}
-            newMealName={newMealName}
-            setNewMealName={setNewMealName}
-            addMealSlot={addMealSlot}
-          />
-        );
-      }
-
-    if (activePhase.id === "quick-list") {
-        return (
-          <PhaseQuickList
-            foodNotes={foodNotes}
-            setFoodNotes={setFoodNotes}
-            drinkNotes={drinkNotes}
-            setDrinkNotes={setDrinkNotes}
-          />
-        );
-      }
-
-    if (activePhase.id === "food-matching") {
-      return (
-        <section className="flow-card" aria-live="polite">
-          <h3>Food matching (second pass)</h3>
-          <p>Konversi raw text menjadi item terstruktur berdasarkan database makanan.</p>
-
-          <div className="status-actions">
-            <button type="button" className={matchStatus === "matched" ? "active" : ""} onClick={() => setMatchStatus("matched")}>Ditemukan</button>
-            <button type="button" className={matchStatus === "similar" ? "active" : ""} onClick={() => setMatchStatus("similar")}>Mirip</button>
-            <button type="button" className={matchStatus === "missing" ? "active" : ""} onClick={() => setMatchStatus("missing")}>Saya tidak menemukan makanan saya</button>
-          </div>
-
-          {matchStatus === "missing" ? (
-            <div className="missing-flow">
-              <h4>Missing Food Flow</h4>
-              <p>Apakah makanan ini homemade, dan apakah Anda tahu bahan-bahannya?</p>
-
-              <div className="status-actions">
-                <button type="button" className={missingType === "homemade" ? "active" : ""} onClick={() => setMissingType("homemade")}>Ya, homemade</button>
-                <button type="button" className={missingType === "unknown" ? "active" : ""} onClick={() => setMissingType("unknown")}>Tidak tahu detail bahan</button>
-              </div>
-
-              {missingType === "homemade" ? (
-                <div className="form-grid two-up">
-                  <label>
-                    Bahan utama
-                    <input
-                      type="text"
-                      placeholder="Contoh: beras, telur, minyak"
-                      value={recipeIngredients}
-                      onChange={(e) => setRecipeIngredients(e.target.value)}
-                    />
-                  </label>
-                  <label>
-                    Komposisi atau resep
-                    <input
-                      type="text"
-                      placeholder="Contoh: 1 porsi, 2 telur"
-                      value={recipeComposition}
-                      onChange={(e) => setRecipeComposition(e.target.value)}
-                    />
-                  </label>
-                </div>
-              ) : (
-                <div className="form-grid two-up">
-                  <label>
-                    Nama makanan
-                    <input
-                      type="text"
-                      placeholder="Contoh: Roti isi rumahan"
-                      value={missingFoodName}
-                      onChange={(e) => setMissingFoodName(e.target.value)}
-                    />
-                  </label>
-                  <label>
-                    Brand
-                    <input
-                      type="text"
-                      placeholder="Opsional"
-                      value={missingBrand}
-                      onChange={(e) => setMissingBrand(e.target.value)}
-                    />
-                  </label>
-                  <label>
-                    Deskripsi singkat
-                    <input
-                      type="text"
-                      placeholder="Contoh: roti gandum isi ayam"
-                      value={missingDescription}
-                      onChange={(e) => setMissingDescription(e.target.value)}
-                    />
-                  </label>
-                  <label>
-                    Estimasi porsi dan sisa makanan
-                    <input
-                      type="text"
-                      placeholder="Contoh: 1 porsi, tersisa 20%"
-                      value={missingPortionNotes}
-                      onChange={(e) => setMissingPortionNotes(e.target.value)}
-                    />
-                  </label>
-                </div>
-              )}
-            </div>
-          ) : (
-            <div className="table-wrap">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Raw item</th>
-                    <th>Hasil matching</th>
-                    <th>Kategori</th>
-                    <th>Brand</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>Nasi goreng</td>
-                    <td>Fried rice, egg</td>
-                    <td>Makanan utama</td>
-                    <td>-</td>
-                  </tr>
-                  <tr>
-                    <td>Teh manis</td>
-                    <td>Sweetened iced tea</td>
-                    <td>Minuman</td>
-                    <td>Teh Botol (similar)</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          )}
-        </section>
-      );
-    }
-
-    if (activePhase.id === "associated-prompts") {
-        return (
-          <PhaseAssociatedPrompts 
-            goToPhase={goToPhase} 
-            setNotice={setNotice} 
-            nextPhase={nextPhase} 
-          />
-        );
-      }
-
-    if (activePhase.id === "detail-questions") {
-        return <PhaseDetailQuestions />;
-      }
-
-    if (activePhase.id === "portion") {
-        return (
-          <PhasePortionEstimation
-            portionMode={portionMode}
-            setPortionMode={setPortionMode}
-            portionScale={portionScale}
-            setPortionScale={setPortionScale}
-            portionGram={portionGram}
-            setPortionGram={setPortionGram}
-          />
-        );
-      }
-
-    if (activePhase.id === "meal-review") {
-        return <PhaseMealReview />;
-      }
-
-    if (activePhase.id === "day-review") {
-          return <PhaseDayReview goToPhase={goToPhase} setNotice={setNotice} />;
-        }
-
-    if (activePhase.id === "submit") {
-          return <PhaseSubmit goToPhase={goToPhase} setNotice={setNotice} />;
-        }
-
-    return <PhaseResult exportData={exportData} />;
-  }
-
+    
   if (route === "demo") {
     return (
       <main className="survey-shell" aria-labelledby="survey-title">

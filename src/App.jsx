@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Home from "./pages/Home";
-import Demo from "./pages/Demo"; // Memanggil file Demo yang baru dibuat
+import Demo from "./pages/Demo";
+import { AtlasProvider } from "./context/AtlasContext"; // INI WAJIB ADA
 
 function getCurrentRoute() {
   return window.location.hash === "#/demo" ? "demo" : "home";
@@ -18,6 +19,12 @@ export default function App() {
     return () => window.removeEventListener("hashchange", handleHashChange);
   }, []);
 
-  // Jika URL-nya ada #/demo, tampilkan form. Jika tidak, tampilkan Beranda.
-  return route === "demo" ? <Demo /> : <Home />;
+  // PASTIKAN DEMO DIBUNGKUS SEPERTI INI
+  return route === "demo" ? (
+    <AtlasProvider>
+      <Demo />
+    </AtlasProvider>
+  ) : (
+    <Home />
+  );
 }
